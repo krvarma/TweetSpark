@@ -1,0 +1,93 @@
+[  
+   {  
+      "id":"912f0dd1.6ed0f",
+      "type":"debug",
+      "name":"Display Spark Core Response",
+      "active":true,
+      "console":"false",
+      "complete":"true",
+      "x":411,
+      "y":519,
+      "z":"8d20b1b7.72df5",
+      "wires":[  
+
+      ]
+   },
+   {  
+      "id":"589a52ee.a765ac",
+      "type":"twitter in",
+      "twitter":"",
+      "tags":"spark-call,spark-read",
+      "user":"false",
+      "name":"Spark Core Twitter Feeds",
+      "topic":"tweets",
+      "x":218,
+      "y":153,
+      "z":"8d20b1b7.72df5",
+      "wires":[  
+         [  
+            "561deb69.a9e214"
+         ]
+      ]
+   },
+   {  
+      "id":"561deb69.a9e214",
+      "type":"function",
+      "name":"Process Spark Core Twitter Messages",
+      "func":"var tckns = msg.payload.split(\" \");\nvar op = \"function\";\nvar payld = \"\";\n\nif(tckns[0] == \"spark-call\"){\n\top = \"function\";\n}\nelse if(tckns[0] == \"spark-read\"){\n\top = \"variable\";\n}\n\nif(tckns.length >= 3){\n\tpayld = tckns[2];\n}\n\n\nvar newMsg = {\n\tname: tckns[1],\n\toperation: op,\n\tpayload: payld,\n};\n\nreturn newMsg;",
+      "outputs":1,
+      "x":285,
+      "y":266,
+      "z":"8d20b1b7.72df5",
+      "wires":[  
+         [  
+            "6d6ccd8.f929334"
+         ]
+      ]
+   },
+   {  
+      "id":"a5edeb1c.5a1218",
+      "type":"twitter out",
+      "twitter":"",
+      "name":"Tweet",
+      "x":796,
+      "y":399,
+      "z":"8d20b1b7.72df5",
+      "wires":[  
+
+      ]
+   },
+   {  
+      "id":"6d6ccd8.f929334",
+      "type":"SparkCore in",
+      "baseurl":"https://api.spark.io",
+      "method":"readmsg",
+      "fve":"",
+      "param":"",
+      "repeat":0,
+      "x":349,
+      "y":391,
+      "z":"8d20b1b7.72df5",
+      "wires":[  
+         [  
+            "912f0dd1.6ed0f",
+            "d7c36a5b.283c98"
+         ]
+      ]
+   },
+   {  
+      "id":"d7c36a5b.283c98",
+      "type":"function",
+      "name":"Format result",
+      "func":"var today = new Date();\nvar str = today.toGMTString();  // deprecated! use toUTCString()\nvar result = msg.payload + \" (updated on \" + str + \")\";\n\nvar newMsg = {\n\tpayload: result\n};\nreturn newMsg;",
+      "outputs":1,
+      "x":591,
+      "y":310,
+      "z":"8d20b1b7.72df5",
+      "wires":[  
+         [  
+            "a5edeb1c.5a1218"
+         ]
+      ]
+   }
+]
