@@ -34,7 +34,7 @@
       "id":"561deb69.a9e214",
       "type":"function",
       "name":"Process Spark Core Twitter Messages",
-      "func":"var tckns = msg.payload.split(\" \");\nvar op = \"function\";\nvar payld = \"\";\n\nif(tckns[0] == \"spark-call\"){\n\top = \"function\";\n}\nelse if(tckns[0] == \"spark-read\"){\n\top = \"variable\";\n}\n\nif(tckns.length >= 3){\n\tpayld = tckns[2];\n}\n\n\nvar newMsg = {\n\tname: tckns[1],\n\toperation: op,\n\tpayload: payld,\n};\n\nreturn newMsg;",
+      "func":"var tckns = msg.payload.split(\" \");\nvar pl = msg.payload;\nvar pos = pl.indexOf(\" \");\n\nvar op = \"function\";\nvar name = \"\";\nvar payld = \"\";\n\nop = msg.payload.substring(0, pos);\npl = pl.substring(pos + 1);\npos = pl.indexOf(\" \");\n\nif(-1 != pos){\n\tname = pl.substring(0, pos);\n\tpayld = pl.substring(pos + 1);\n}else{\n\tname = pl;\n}\n\nif(op == \"spark-call\"){\n\top = \"function\";\n}\nelse if(op == \"spark-read\"){\n\top = \"variable\";\n}\n\nvar newMsg = {\n\tname: name,\n\toperation: op,\n\tpayload: payld,\n};\n\nreturn newMsg;",
       "outputs":1,
       "x":285,
       "y":266,
